@@ -4,15 +4,18 @@
     <transition name="component-fade" mode="out-in">
       <router-view></router-view>
     </transition>
+    <cs-footer></cs-footer>
   </div>
 </template>
 
 <script>
 import csHeader from './components/csHeader'
+import csFooter from './components/csFooter'
 export default {
   name: 'App',
   components: {
-    csHeader
+    csHeader,
+    csFooter
   }
 }
 </script>
@@ -22,8 +25,10 @@ export default {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  body {
+  html {
     background: #36465d;
+  }
+  body {
     color: #fff!important;
   }
   /* Vue 多组件切换过渡动画 */
