@@ -2,16 +2,26 @@
   <header id="header">
 
     <!-- 导航栏 -->
-    <nav class="navbar is-fixed-top cs-navbar">
+    <nav
+      :class="[currentHeaderStatus === 'article' ? 'article-header' : 'homepage-header', 'navbar', 'is-fixed-top', 'cs-navbar']">
       <div class="navbar-brand">
         <a href="javacript:void(0);" class="navbar-item">
           <img src="@/assets/logo.png" alt="hello">
         </a>
+        <div
+          class="navbar-burger burger"
+          data-target="navbarExampleTransparentExample"
+          @click="isMobile = !isMobile">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
       </div>
-      <div class="navbar-menu">
+      <div
+        :class="[ isMobile ? 'is-active' : '', 'navbar-menu']">
         <div class="navbar-start">
-          <a class="navbar-item">Home</a>
-          <a class="navbar-item">About</a>
+          <a class="navbar-item" href="#/">Home</a>
+          <a class="navbar-item" href="#/about">About</a>
           <a class="navbar-item">Extra</a>
         </div>
         <div class="navbar-end">
@@ -21,12 +31,29 @@
       </div>
     </nav>
 
-    <!-- 大标题 -->
-    <div class="main-title-container">
+    <!-- 主页大标题 -->
+    <div
+      class="main-title-container"
+      v-show="currentHeaderStatus === 'other'">
       <div class="main-title-wrap">
         <div class="title">一方净土</div>
         <br>
         <div class="subtitle">Life is Art.</div>
+      </div>
+    </div>
+
+    <!-- 文章背景 -->
+    <div
+      class="article-bk-container"
+      v-show="currentHeaderStatus === 'article'"
+      :style="{backgroundImage: `url(${bkImage})`}">
+      <div class="article-title-wrapper">
+        <div class="article-title">
+          {{ articleTitle }}
+        </div>
+        <div class="article-subtitle">
+          {{ articleSubtitle }}
+        </div>
       </div>
     </div>
 
@@ -38,18 +65,37 @@
 </template>
 
 <script>
+import eventScheduler from '@/utils/eventScheduler'
 export default {
   data () {
     return {
-      returnTopBtnVisible: false
+      returnTopBtnVisible: false,
+      currentHeaderStatus: 'other', // other | article,
+      bkImage: '',
+      articleTitle: '',
+      articleSubtitle: '',
+      isMobile: false
     }
   },
   mounted () {
+    // 监听页面滚动事件
     this.$nextTick(() => {
       document.documentElement.scrollTop > 30
         ? this.returnTopBtnVisible = true
         : this.returnTopBtnVisible = false
       window.addEventListener('scroll', this.listenScroll)
+    })
+    eventScheduler.$on('current-banner-data', (bannerData) => {
+      this.currentHeaderStatus = 'article'
+      this.bkImage = bannerData.picUrl
+      this.articleTitle = bannerData.title
+      this.articleSubtitle = bannerData.meta.createAt
+    })
+  },
+  updated () {
+    eventScheduler.$on('current-change-to-default', (value) => {
+      this.currentHeaderStatus = 'other'
+      window.scrollTo(0, 0)
     })
   },
   methods: {
@@ -80,15 +126,23 @@ export default {
 
 <style scoped>
   .cs-navbar {
-    background: rgba(58, 74, 96, 0.95);
     box-shadow: 0 2px 12px rgba(0, 0, 0, .1);
+    color: #fff;
   }
   .cs-navbar .navbar-item {
     color: #fff;
   }
-  .cs-navbar .navbar-item:hover {
+  .homepage-header {
+    background: rgba(58, 74, 96, 0.95);
+  }
+  .homepage-header .navbar-item:hover {
     background: #415167;
-    color: #fff;
+  }
+  .article-header {
+    background: rgba(0, 0, 0, 0.4);
+  }
+  .article-header .navbar-item:hover {
+    background: rgba(0, 0, 0, 0.5);
   }
   .main-title-container {
     font-family: 'Lato', sans-serif;
@@ -130,10 +184,40 @@ export default {
   .return-top:hover {
     background-color: rgba(0, 0, 0, .4);
   }
+  .article-bk-container {
+    background-position: 50%;
+    background-size: cover;
+    height: 440px;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-end;
+  }
+  .article-bk-container .article-title-wrapper {
+    color: #fff;
+    background: linear-gradient(-180deg,transparent,#000 180%);
+    padding-bottom: 60px;
+  }
+  .article-bk-container .article-title-wrapper .article-title {
+    font-family: -apple-system,
+      BlinkMacSystemFont,"Helvetica Neue",Arial,"PingFang SC","Hiragino Sans GB",STHeiti,"Microsoft YaHei","Microsoft JhengHei","Source Han Sans SC","Noto Sans CJK SC","Source Han Sans CN","Noto Sans SC","Source Han Sans TC","Noto Sans CJK TC","WenQuanYi Micro Hei",SimSun,sans-serif;
+      font-size: 55px;
+      font-weight: 500;
+      margin: 0 200px;
+  }
+  .article-bk-container .article-title-wrapper .article-subtitle {
+    color: #fff;
+    font-family: Lora,'Times New Roman',serif;
+    font-style: italic;
+    font-size: 20px;
+    margin: 0 200px;
+  }
 
   @media screen and (max-width: 768px) {
     .return-top {
       display: none;
+    }
+    .navbar-menu {
+      background: rgba(58, 74, 96, 0.95);
     }
   }
 </style>

@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import 'normalize.css/normalize.css'
 import '../node_modules/bulma/css/bulma.css'
+import '../node_modules/github-markdown-css/github-markdown.css'
 import App from './App'
 import router from './router'
 

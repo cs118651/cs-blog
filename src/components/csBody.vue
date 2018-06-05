@@ -8,22 +8,25 @@
           class="article-card"
           v-for="(article, key) in articleData"
           :key="key">
-          <div
-            class="cover-img"
-            :style="{backgroundImage: `url(${require(`@/assets/articleImg/article${key + 1}.jpg`)})`, backgroundSize: 'cover', backgroundPosition: '50%'}">
-            <div class="info-mask">
-              <div class="content-wrapper">
-                <h2 class="article-title">
-                  {{ article.title }}
-                </h2>
-                <div class="article-info">
-                  <span class="create-time">
-                    {{ article.meta.createAt }}
-                  </span>
+          <router-link
+            :to="{name: 'article', params: {id: article.id}}">
+            <div
+              class="cover-img"
+              :style="{backgroundImage: `url(${article.picUrl})`, backgroundSize: 'cover', backgroundPosition: '50%'}">
+              <div class="info-mask">
+                <div class="content-wrapper">
+                  <h2 class="article-title">
+                    {{ article.title }}
+                  </h2>
+                  <div class="article-info">
+                    <span class="create-time">
+                      {{ article.meta.createAt }}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </router-link>
         </article>
       </div>
 
@@ -60,11 +63,11 @@ export default {
   created () {
     for (let i = 0; i < 4; i++) {
       this.articleData.push({
-        picUrl: `@/assets/articleImg/article${i + 1}.jpg`,
-        test: '@/assets/articleImg/article1.jpg',
+        id: i + 1,
+        picUrl: `/images/article${i + 1}.jpg`,
         title: `博文${i + 1}`,
         meta: {
-          createAt: 'Wed, 23 May 2018 14:24:27 GMT',
+          createAt: '2018.05.16 10:36 pm',
           updateAt: ''
         },
         pv: 40

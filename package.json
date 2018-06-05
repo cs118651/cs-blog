@@ -14,7 +14,8 @@
   },
   "dependencies": {
     "bulma": "^0.7.1",
-    "markdown-it": "^8.4.1",
+    "github-markdown-css": "^2.10.0",
+    "markdown-it": "^8.4.0",
     "normalize.css": "^8.0.0",
     "vue": "^2.5.2",
     "vue-resource": "^1.5.1",
