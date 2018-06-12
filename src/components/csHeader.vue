@@ -11,22 +11,22 @@
         <div
           class="navbar-burger burger"
           data-target="navbarExampleTransparentExample"
-          @click="isMobile = !isMobile">
+          @click="isDropDown = !isDropDown">
           <span></span>
           <span></span>
           <span></span>
         </div>
       </div>
       <div
-        :class="[ isMobile ? 'is-active' : '', 'navbar-menu']">
+        :class="[ isDropDown ? 'is-active' : '', 'navbar-menu']">
         <div class="navbar-start">
-          <a class="navbar-item" href="#/">Home</a>
-          <a class="navbar-item" href="#/about">About</a>
-          <a class="navbar-item">Extra</a>
+          <a class="navbar-item" href="#/" @click="handleClick">Home</a>
+          <a class="navbar-item" href="#/about"  @click="handleClick">About</a>
+          <!-- <a class="navbar-item">Extra</a> -->
         </div>
         <div class="navbar-end">
-          <a class="navbar-item">Login</a>
-          <a class="navbar-item">Logout</a>
+          <!-- <a class="navbar-item">Login</a> -->
+          <!-- <a class="navbar-item">Logout</a> -->
         </div>
       </div>
     </nav>
@@ -74,7 +74,7 @@ export default {
       bkImage: '',
       articleTitle: '',
       articleSubtitle: '',
-      isMobile: false
+      isDropDown: false
     }
   },
   mounted () {
@@ -119,6 +119,9 @@ export default {
       } else {
         this.returnTopBtnVisible = false
       }
+    },
+    handleClick () {
+      this.isDropDown = false
     }
   }
 }
@@ -218,6 +221,13 @@ export default {
     }
     .navbar-menu {
       background: rgba(58, 74, 96, 0.95);
+    }
+    .article-bk-container .article-title-wrapper .article-title {
+      font-size: 30px;
+      margin: 0 50px;
+    }
+    .article-bk-container .article-title-wrapper .article-subtitle {
+      margin: 0 50px;
     }
   }
 </style>

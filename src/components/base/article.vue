@@ -68,7 +68,7 @@ export default {
     box-shadow: 5px 5px 5px rgba(0, 0, 0, .3);
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     .markdown-body {
       padding: 15px;
     }
