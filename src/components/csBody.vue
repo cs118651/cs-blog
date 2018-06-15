@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import { getArticleList } from '@/action/articleAction'
 export default {
   data () {
     return {
