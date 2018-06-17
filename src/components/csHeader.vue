@@ -5,7 +5,7 @@
     <nav
       :class="[currentHeaderStatus === 'article' ? 'article-header' : 'homepage-header', 'navbar', 'is-fixed-top', 'cs-navbar']">
       <div class="navbar-brand">
-        <a href="javacript:void(0);" class="navbar-item">
+        <a href="#/" class="navbar-item">
           <img src="@/assets/logo.png" alt="hello">
         </a>
         <div
@@ -36,7 +36,7 @@
       class="main-title-container"
       v-show="currentHeaderStatus === 'other'">
       <div class="main-title-wrap">
-        <div class="title">一方净土</div>
+        <div class="title">不忘初心</div>
         <br>
         <div class="subtitle">Life is Art.</div>
       </div>
@@ -46,19 +46,19 @@
     <div
       class="article-bk-container"
       v-show="currentHeaderStatus === 'article'"
-      :style="{backgroundImage: `url(${bkImage})`}">
+      :style="{backgroundImage: `url(${hostname}${bannerData.picUrl})`}">
       <div class="article-title-wrapper">
         <div class="article-title">
-          {{ articleTitle }}
+          {{ bannerData.title }}
         </div>
         <div class="article-subtitle">
-          {{ articleSubtitle }}
+          {{ timeFormat(bannerData.meta.createAt) }}
         </div>
       </div>
     </div>
 
     <!-- 返回顶部按钮 -->
-    <div class="return-top" @click="scrollToTop(30)" v-show="returnTopBtnVisible">
+    <div class="return-top" @click="goTop(30)" v-show="returnTopBtnVisible">
       <i class="fas fa-arrow-up"></i>
     </div>
   </header>
@@ -66,16 +66,25 @@
 
 <script>
 import eventScheduler from '@/utils/eventScheduler'
+import { scrollToTop } from '@/utils'
 export default {
   data () {
     return {
       returnTopBtnVisible: false,
       currentHeaderStatus: 'other', // other | article,
-      bkImage: '',
-      articleTitle: '',
-      articleSubtitle: '',
-      isDropDown: false
+      bannerData: {
+        picUrl: '',
+        title: '',
+        meta: {
+          createAt: ''
+        }
+      },
+      isDropDown: false,
+      hostname: ''
     }
+  },
+  created () {
+    this.hostname = `${location.protocol}//${location.hostname}:3000`
   },
   mounted () {
     // 监听页面滚动事件
@@ -87,9 +96,7 @@ export default {
     })
     eventScheduler.$on('current-banner-data', (bannerData) => {
       this.currentHeaderStatus = 'article'
-      this.bkImage = bannerData.picUrl
-      this.articleTitle = bannerData.title
-      this.articleSubtitle = bannerData.meta.createAt
+      this.bannerData = bannerData
     })
   },
   updated () {
@@ -99,18 +106,8 @@ export default {
     })
   },
   methods: {
-    scrollToTop (speed) {
-      const curHeight = document.documentElement.scrollTop
-      if (curHeight === 0) return
-      let timer = setInterval(() => {
-        let top = document.documentElement.scrollTop
-        if (top < speed) {
-          top = 0
-          clearInterval(timer)
-        } else {
-          document.documentElement.scrollTop -= speed
-        }
-      }, 1)
+    goTop (speed) {
+      return scrollToTop(speed)
     },
     listenScroll () {
       const top = document.documentElement.scrollTop
@@ -122,6 +119,10 @@ export default {
     },
     handleClick () {
       this.isDropDown = false
+    },
+    timeFormat (timeStr) {
+      const dateObj = new Date(timeStr)
+      return dateObj.toLocaleString().replace(/\//g, '-')
     }
   }
 }

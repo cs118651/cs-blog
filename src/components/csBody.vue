@@ -9,10 +9,10 @@
           v-for="(article, key) in articleData"
           :key="key">
           <router-link
-            :to="{name: 'article', params: {id: article.id}}">
+            :to="{name: 'article', params: {id: article._id}}">
             <div
               class="cover-img"
-              :style="{backgroundImage: `url(${article.picUrl})`, backgroundSize: 'cover', backgroundPosition: '50%'}">
+              :style="{backgroundImage: `url(${hostname}${article.picUrl})`, backgroundSize: 'cover', backgroundPosition: '50%'}">
               <div class="info-mask">
                 <div class="content-wrapper">
                   <h2 class="article-title">
@@ -20,7 +20,7 @@
                   </h2>
                   <div class="article-info">
                     <span class="create-time">
-                      {{ article.meta.createAt }}
+                      {{ timeFormat(article.meta.createAt) }}
                     </span>
                   </div>
                 </div>
@@ -32,8 +32,8 @@
 
       <!-- 分页组件 -->
       <nav class="pagination is-centered home-page-pagination">
-        <a class="pagination-previous">Previous</a>
-        <a class="pagination-next">Next page</a>
+        <a class="pagination-previous" @click="goToPage('back')">上一页</a>
+        <a class="pagination-next" @click="goToPage('next')">下一页</a>
         <ul class="pagination-list">
           <li
             v-for="(page, key) in totalPages"
@@ -41,7 +41,7 @@
             <a
               class="pagination-link"
               :class="{ 'is-current': page === currentPage }"
-              v-on:click="goToPage(page)">
+              @click="goToPage(page)">
                 {{ page }}
             </a>
           </li>
@@ -52,32 +52,61 @@
 </template>
 
 <script>
-import { getArticleList } from '@/action/articleAction'
+import articleAction from '@/action/articleAction'
+import { scrollToTop } from '@/utils'
+const { getArticleList, getPage } = articleAction
 export default {
   data () {
     return {
       articleData: [],
-      totalPages: 4,
-      currentPage: 1
+      articleSum: 4,
+      currentPage: 1,
+      hostname: ''
     }
   },
   created () {
-    for (let i = 0; i < 4; i++) {
-      this.articleData.push({
-        id: i + 1,
-        picUrl: `/images/article${i + 1}.jpg`,
-        title: `博文${i + 1}`,
-        meta: {
-          createAt: '2018.05.16 10:36 pm',
-          updateAt: ''
-        },
-        pv: 40
-      })
-    }
+    this.hostname = `${location.protocol}//${location.hostname}:3000`
+    getArticleList().then(res => {
+      if (res.ok) {
+        console.log(res)
+        this.articleSum = res.body.articleSum
+        this.articleData = res.body.articles
+      }
+    })
   },
   methods: {
     goToPage (page) {
-      this.currentPage = page
+      let pageNum
+      const { currentPage } = this
+      if (typeof page === 'string') {
+        if (page === 'back') {
+          if (currentPage === 1) return
+          this.currentPage = pageNum = currentPage - 1
+        } else {
+          if (currentPage === this.totalPages) return
+          this.currentPage = pageNum = currentPage + 1
+        }
+      } else {
+        if (page === currentPage) return
+        this.currentPage = pageNum = page
+      }
+      scrollToTop(30)
+      getPage(pageNum).then(res => {
+        if (res.ok) {
+          this.articleSum = res.body.articleSum
+          this.articleData = res.body.articles
+        }
+      })
+    },
+    timeFormat (timeStr) {
+      const dateObj = new Date(timeStr)
+      return dateObj.toLocaleString().replace(/\//g, '-')
+    }
+  },
+  computed: {
+    totalPages () {
+      const { articleSum } = this
+      return Math.ceil(articleSum / 4)
     }
   }
 }
@@ -141,11 +170,5 @@ export default {
   }
   .pagination.home-page-pagination .pagination-link.is-current {
     background: #3273dc;
-  }
-  /* 竖屏 */
-  @media screen and (max-width: 768px) {
-    .pagination.home-page-pagination .pagination-list {
-      margin-top: 1rem;
-    }
   }
 </style>

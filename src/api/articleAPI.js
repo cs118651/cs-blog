@@ -1,7 +1,7 @@
 import _ from 'lodash'
-import domains from './domains'
+import domain from './domain'
 const addDomain = domain => path => domain + path
-const { csDomain } = domains
+const { csDomain } = domain
 
 const APIs = {
   POST_NEW_ARTICLE: '/api/article/new', // 新建文章接口

@@ -11,9 +11,9 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/images': {
-        target: 'http://127.0.0.1:3000/' // 本地代理
-      }
+      // '/images': {
+      //   target: 'http://127.0.0.1:3000/' // 本地代理
+      // }
     },
 
     // Various Dev Server settings

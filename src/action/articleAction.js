@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import articleAPI from '../ap/articleAPI'
+import articleAPI from '../api/articleAPI'
 
 // 新增文章
 const newArticle = function (articleInfo) {

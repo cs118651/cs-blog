@@ -1,9 +1,9 @@
 <template>
   <footer class="site-footer">
-    <p class="copyright">Copyright © 2018 享受创造的快乐.</p>
+    <p class="copyright">Copyright © 2018 创意者.</p>
     <div class="link-group">
       <span class="txt-box">
-        <a href="http://www.miitbeian.gov.cn/" target="_blank">京ICP备17058358号-1</a>
+        <a href="http://www.miitbeian.gov.cn/" target="_blank">浙ICP备17046850号-1</a>
       </span>
     </div>
   </footer>
